@@ -74,8 +74,14 @@ function request_is_post() {
 // Either way, it is a bug and it must be solved rather than handled gracefully
 //
 // FIXME: bool to se ia_redirect to REQUEST_URI? might be usefull.
-function redirect($absolute_url) {
-    header("Location: {$absolute_url}\n\n");
+function redirect($absolute_url, $code = 302) {
+    log_assert($code === 301 || $code === 302);
+    if ($code === 301) {
+        header('HTTP/1.1 301 Moved Permanently');
+    } elseif ($code === 302) {
+        header('HTTP/1.1 302 Found');
+    }
+    header('Location: ' . $absolute_url);
     session_write_close();
     save_tokens();
     die();
@@ -174,7 +180,7 @@ function http_serve($disk_file_name, $http_file_name, $mime_type = null, $cache_
 
 // Die with a http error.
 function die_http_error($code = 404, $msg = "File not found") {
-    header("HTTP/1.0 $code");
+    header("HTTP/1.1 $code");
     echo '<h1>'.$msg.'</h1>';
     echo '<p><a href="'.IA_URL.'">Inapoi la prima pagina</a></p>';
     die();

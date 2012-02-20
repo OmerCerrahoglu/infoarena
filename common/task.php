@@ -158,7 +158,8 @@ function task_validate($task) {
         }
     } else {
         if (!is_attachment_name($task['evaluator'])) {
-            $errors['evaluator'] = 'Nume de fisier invalid.';
+            $errors['evaluator'] = 'Nume de fisier invalid pentru problema '
+                                 . $task['id'];
         }
     }
 
